@@ -6,8 +6,11 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1>Lista de Clientes</h1>
-    <a href="/clientes/novo" class="btn btn-primary mb-3">Novo Cliente</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Lista de Clientes</h1>
+        <a href="/agente/dashboard" class="btn btn-secondary">Voltar ao Dashboard</a>
+    </div>
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -26,7 +29,7 @@
             <td th:text="${cliente.cpf}"></td>
             <td>
                 <a th:href="@{/clientes/editar/{id}(id=${cliente.id})}" class="btn btn-warning btn-sm">Editar</a>
-                <a th:href="@{/clientes/deletar/{id}(id=${cliente.id})}" class="btn btn-danger btn-sm">Deletar</a>
+                <a th:href="@{/agente/clientes/deletar/{id}(id=${cliente.id})}" class="btn btn-danger btn-sm">Deletar</a>
             </td>
         </tr>
         </tbody>
