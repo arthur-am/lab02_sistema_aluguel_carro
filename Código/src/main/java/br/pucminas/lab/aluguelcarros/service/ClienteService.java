@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.pucminas.lab.aluguelcarros.model.Cliente;
+import br.pucminas.lab.aluguelcarros.model.Rendimento;
 import br.pucminas.lab.aluguelcarros.repository.ClienteRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClienteService {
@@ -25,6 +27,10 @@ public class ClienteService {
         return clienteRepository.findById(id);
     }
 
+    public Optional<Cliente> buscarPorEmail(String email) {
+        return clienteRepository.findByEmail(email);
+    }
+
     public Cliente salvar(Cliente cliente) {
         if (clienteRepository.existsByCpf(cliente.getCpf())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "CPF já cadastrado.");
@@ -37,5 +43,29 @@ public class ClienteService {
 
     public void deletarPorId(Long id) {
         clienteRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Cliente atualizar(String emailAutenticado, Cliente dadosCliente) {
+        Cliente clienteExistente = clienteRepository.findByEmail(emailAutenticado)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+
+        clienteExistente.setNome(dadosCliente.getNome());
+        clienteExistente.setEndereco(dadosCliente.getEndereco());
+
+        if (dadosCliente.getRendimentos() != null && !dadosCliente.getRendimentos().isEmpty()) {
+            Rendimento novosDadosRendimento = dadosCliente.getRendimentos().get(0);
+            if (clienteExistente.getRendimentos() != null && !clienteExistente.getRendimentos().isEmpty()) {
+                Rendimento rendimentoExistente = clienteExistente.getRendimentos().get(0);
+                rendimentoExistente.setProfissao(novosDadosRendimento.getProfissao());
+                rendimentoExistente.setEntidadeEmpregadora(novosDadosRendimento.getEntidadeEmpregadora());
+                rendimentoExistente.setRendimentoMensal(novosDadosRendimento.getRendimentoMensal());
+            } else {
+                novosDadosRendimento.setCliente(clienteExistente);
+                clienteExistente.setRendimentos(List.of(novosDadosRendimento));
+            }
+        }
+        
+        return clienteRepository.save(clienteExistente);
     }
 }

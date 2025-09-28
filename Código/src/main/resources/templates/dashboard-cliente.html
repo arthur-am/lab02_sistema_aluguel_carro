@@ -8,9 +8,12 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>Meus Pedidos de Aluguel</h1>
-        <form th:action="@{/login}" method="post">
-            <button type="submit" class="btn btn-danger">Sair</button>
-        </form>
+        <div>
+            <a href="/clientes/perfil" class="btn btn-info">Meu Perfil</a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-danger">Sair</button>
+            </form>
+        </div>
     </div>
 
     <a href="/pedidos/novo" class="btn btn-primary mb-3">Novo Pedido de Aluguel</a>
@@ -36,7 +39,12 @@
                 </span>
             </td>
             <td>
-                <a th:if="${pedido.status.name() == 'EM_ANALISE'}" th:href="@{/pedidos/cancelar/{id}(id=${pedido.id})}" class="btn btn-danger btn-sm">Cancelar</a>
+                <div th:if="${pedido.status.name() == 'EM_ANALISE'}">
+                    <a th:href="@{/pedidos/editar/{id}(id=${pedido.id})}" class="btn btn-warning btn-sm">Modificar</a>
+                    <form th:action="@{/pedidos/cancelar/{id}(id=${pedido.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>

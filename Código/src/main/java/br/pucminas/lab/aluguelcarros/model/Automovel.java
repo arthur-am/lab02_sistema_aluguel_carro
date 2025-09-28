@@ -16,6 +16,9 @@ public class Automovel {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String matricula;
+
+    @Column(nullable = false, unique = true)
     private String placa;
 
     @Column(nullable = false)

@@ -1,6 +1,7 @@
 package br.pucminas.lab.aluguelcarros.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,13 @@ public class AutomovelService {
     
     public Automovel salvar(Automovel automovel) {
         return automovelRepository.save(automovel);
+    }
+
+    public void deletarPorId(Long id) {
+        automovelRepository.deleteById(id);
+    }
+
+    public Optional<Automovel> buscarPorId(Long id) {
+        return automovelRepository.findById(id);
     }
 }

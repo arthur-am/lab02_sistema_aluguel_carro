@@ -1,6 +1,5 @@
 package br.pucminas.lab.aluguelcarros.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,25 +11,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import br.pucminas.lab.aluguelcarros.service.CustomUserDetailsService;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService; 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/login", "/css/**", "/images/**", "/error").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers( "/clientes/novo", "/clientes/salvar").permitAll()
-                        .requestMatchers("/pedidos/**").hasRole("CLIENTE")
-                        .requestMatchers("/agente/**").hasRole("AGENTE")
+                        .requestMatchers("/clientes/novo", "/clientes/salvar").permitAll()
+                        .requestMatchers("/pedidos/**", "/clientes/perfil/**").hasRole("CLIENTE")
+                        .requestMatchers("/agente/**", "/automoveis/**", "/contratos/**").hasRole("AGENTE")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

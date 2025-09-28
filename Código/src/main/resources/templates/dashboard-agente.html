@@ -6,45 +6,63 @@
 </head>
 <body>
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Dashboard do Agente</h1>
-        <div>
-             <a href="/agente/clientes" class="btn btn-info">Ver Clientes</a>
-            <form th:action="@{/login}" method="post" class="d-inline">
+         <a href="/agente/gerenciar" class="btn btn-secondary">Gerenciar Agentes</a>
+            <a href="/automoveis" class="btn btn-primary">Gerenciar Automóveis</a>
+            <a href="/agente/clientes" class="btn btn-info">Ver Clientes</a>
+            <form th:action="@{/logout}" method="post" class="d-inline">
                 <button type="submit" class="btn btn-danger">Sair</button>
             </form>
         </div>
     </div>
 
-    <h2>Pedidos de Aluguel para Avaliação</h2>
+    <h2>Pedidos de Aluguel para Análise</h2>
     <table class="table table-striped">
         <thead>
         <tr>
             <th>ID Pedido</th>
-            <th>Cliente (ID)</th>
+            <th>Cliente</th>
             <th>Automóvel</th>
             <th>Data</th>
-            <th>Status Atual</th>
+            <th>Status</th>
             <th>Ações</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="pedido : ${pedidos}">
             <td th:text="${pedido.id}"></td>
-            <td th:text="${pedido.cliente != null ? pedido.cliente.nome : 'N/A'}"></td>
+            <td th:text="${pedido.cliente.nome}"></td>
             <td th:text="${pedido.automovel.marca + ' ' + pedido.automovel.modelo}"></td>
             <td th:text="${#temporals.format(pedido.dataPedido, 'dd/MM/yyyy')}"></td>
-            <td th:text="${pedido.status}"></td>
             <td>
-                <form th:action="@{/agente/pedidos/avaliar/{id}(id=${pedido.id})}" method="post" class="d-inline">
-                     <div class="input-group">
-                        <select name="status" class="form-select form-select-sm">
-                            <option value="APROVADO">Aprovar</option>
-                            <option value="REPROVADO">Reprovar</option>
-                        </select>
-                        <button type="submit" class="btn btn-success btn-sm">Avaliar</button>
+                 <span th:text="${pedido.status}" 
+                      th:classappend="${pedido.status.name() == 'APROVADO'} ? 'text-success' : 
+                                     (${pedido.status.name() == 'REPROVADO'} ? 'text-danger' : 
+                                     (${pedido.status.name() == 'CONTRATO_GERADO'} ? 'text-primary' : 'text-warning'))">
+                </span>
+            </td>
+            <td>
+                <div th:switch="${pedido.status.name()}">  
+                    <div th:case="'EM_ANALISE'">
+                        <a th:href="@{/agente/pedidos/editar/{id}(id=${pedido.id})}" class="btn btn-warning btn-sm">Modificar</a>
+                        <form th:action="@{/agente/pedidos/avaliar/{id}(id=${pedido.id})}" method="post" class="d-inline ms-1">
+                             <div class="input-group input-group-sm">
+                                <select name="status" class="form-select">
+                                    <option value="APROVADO">Aprovar</option>
+                                    <option value="REPROVADO">Reprovar</option>
+                                </select>
+                                <button type="submit" class="btn btn-success">Avaliar</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                    <div th:case="'APROVADO'">
+                        <a th:href="@{/contratos/novo/{pedidoId}(pedidoId=${pedido.id})}" class="btn btn-primary btn-sm">Criar Contrato</a>
+                    </div>
+                    <div th:case="*">
+                        <span>-</span>
+                    </div>
+                </div>
             </td>
         </tr>
         </tbody>

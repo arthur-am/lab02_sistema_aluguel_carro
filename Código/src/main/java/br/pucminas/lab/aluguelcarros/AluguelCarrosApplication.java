@@ -15,7 +15,6 @@ import br.pucminas.lab.aluguelcarros.service.AutomovelService;
 
 @SpringBootApplication
 public class AluguelCarrosApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(AluguelCarrosApplication.class, args);
     }
@@ -26,6 +25,7 @@ public class AluguelCarrosApplication {
             // Adiciona carros de teste, se não existirem
             if (automovelService.buscarTodos().isEmpty()) {
                 Automovel carro1 = new Automovel();
+                carro1.setMatricula("12345678901");
                 carro1.setMarca("Fiat");
                 carro1.setModelo("Mobi");
                 carro1.setAno(2023);
@@ -33,6 +33,7 @@ public class AluguelCarrosApplication {
                 automovelService.salvar(carro1);
 
                 Automovel carro2 = new Automovel();
+                carro2.setMatricula("98765432109");
                 carro2.setMarca("Hyundai");
                 carro2.setModelo("HB20");
                 carro2.setAno(2024);
@@ -58,6 +59,7 @@ public class AluguelCarrosApplication {
                 agente.setEmail("admin@agente.com");
                 agente.setSenha(passwordEncoder.encode("1234"));
                 agente.setCnpj("00.000.000/0001-00");
+                agente.setTipo(Agente.TipoAgente.EMPRESA); 
                 agenteRepository.save(agente);
             }
         };

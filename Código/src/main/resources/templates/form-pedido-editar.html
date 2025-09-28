@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Modificar Pedido de Aluguel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Modificar Pedido de Aluguel #<span th:text="${pedido.id}"></span></h1>
+    <form action="#" th:action="@{/pedidos/editar/salvar}" th:object="${pedido}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{cliente}" />
+        
+        <div class="mb-3">
+            <label for="automovel" class="form-label">Escolha um novo Automóvel</label>
+            <select class="form-select" id="automovel" th:field="*{automovel}" required>
+                <option value="">Selecione...</option>
+                <option th:each="carro : ${automoveis}"
+                        th:value="${carro.id}"
+                        th:text="${carro.marca + ' ' + carro.modelo + ' - ' + carro.ano}">
+                </option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-success">Salvar Modificações</button>
+        <a href="/pedidos/meus-pedidos" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</body>
+</html>
